@@ -13,16 +13,57 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Link } from "react-router-dom"
-import { createAccount } from "@/lib/appwrite/api"
+import { Link, useNavigate } from "react-router-dom"
+import { useToast } from "@/components/ui/use-toast"
+import { useCreateUserAccount, useSignInAccount } from "@/lib/react-query/queriesandMutation"
+
+import { useUserContext } from "@/context/AuthContext"
 
 
 const SignupForm = () => {
 
-  const isLoading = false
+  const navigate=useNavigate()
+
+  const {toast}=useToast();
+
+  const {mutateAsync:createUserAccount, isPending:isCreatingUser} =useCreateUserAccount();
+
+  const {mutateAsync:signInAccount, isPending:isSigningInUser}=useSignInAccount();
+
+  const {checkAuthUser, isLoading:isUserLoading}=useUserContext();
+
 
     async function onSubmit(values:z.infer<typeof signupValidation>) {
-      const newUser=await createAccount(values)
+      const newUser=await createUserAccount(values)
+
+      if(!newUser){
+        return toast({
+          title: "Something went wrong",
+        })
+      }
+
+      const session=await signInAccount({
+        email:values.email,
+        password:values.password
+      });
+
+      if(!session){
+        return toast({
+          title: "Something went wrong",
+        })
+      }
+
+      const isLoggedIn= await checkAuthUser();
+
+      if(isLoggedIn){
+        form.reset();
+        navigate("/")
+      }else{
+        return toast({
+          title: "Something went wrong",
+        })
+      }
+
 
       return newUser
 
@@ -95,8 +136,8 @@ const SignupForm = () => {
                     </FormItem>
                 )}
                 />
-                <Button type="submit" className="shad-button_primary" disabled={isLoading}>
-                  {isLoading ? "Loading..." :"Submit"}
+                <Button type="submit" className="shad-button_primary" disabled={isCreatingUser}>
+                  {isCreatingUser ? "Loading..." :"Submit"}
                 </Button>
 
                 <p className="text-center text-light-4">
