@@ -97,7 +97,9 @@ const Explore = () => {
           <p className="text-light-4 mt-10 text-center w-full">End of posts</p>
         ) : (
           posts.pages.map((item, index) => (
-            <GridPostList key={`page-${index}`} posts={item?.documents} />
+            item && item.documents ? ( // Check if item and item.documents are defined
+              <GridPostList key={`page-${index}`} posts={item.documents} /> // Render GridPostList
+            ) : null // Return null if item or item.documents is undefined
           ))
         )}
       </div>

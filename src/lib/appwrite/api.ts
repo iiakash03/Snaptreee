@@ -315,6 +315,8 @@ export async function deletePost(postId:string,imageId:string){
         if(!deletePost) throw Error
         const deleteImage=await storage.deleteFile(appwriteConfig.storageId, imageId)
 
+        console.log(deleteImage)
+
         return {status:"Ok"}
     }catch(e){
         console.log(e)
@@ -341,7 +343,7 @@ export async function getUserPosts(userId?: string) {
   }
 
   export async function getInfinitePosts({ pageParam }: { pageParam: number }) {
-    const queries: any[] = [Query.orderDesc("$updatedAt"), Query.limit(9)];
+    const queries: string[] = [Query.orderDesc("$updatedAt"), Query.limit(9)];
   
     if (pageParam) {
       queries.push(Query.cursorAfter(pageParam.toString()));
@@ -381,7 +383,7 @@ export async function getUserPosts(userId?: string) {
 
 
   export async function getUsers(limit?: number) {
-    const queries: any[] = [Query.orderDesc("$createdAt")];
+    const queries: string[] = [Query.orderDesc("$createdAt")];
   
     if (limit) {
       queries.push(Query.limit(limit));

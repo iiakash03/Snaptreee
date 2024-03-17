@@ -17,7 +17,7 @@ const PostDetails = () => {
   const { id } = useParams();
   const { user } = useUserContext();
 
-  const { data: post, isLoading } = useGetPostByID(id)
+  const { data: post, isLoading } = useGetPostByID(id || '')
   const { data: userPosts, isLoading: isUserPostLoading } = useGetUserPosts(
     post?.creator.$id
   );
@@ -28,7 +28,7 @@ const PostDetails = () => {
   );
 
   const handleDeletePost = () => {
-    deletePost({ postId: id, imageId: post?.imageId });
+    deletePost({ postId: id || '', imageId: post?.imageId || ''});
     navigate(-1);
   };
 

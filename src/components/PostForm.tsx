@@ -72,7 +72,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
       userId: user.id,
     });
 
-    if (!newPost) {
+    if (newPost===undefined){
       toast({
         title: `${action} post failed. Please try again.`,
       });
